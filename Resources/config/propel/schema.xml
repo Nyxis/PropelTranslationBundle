@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="default" defaultIdMethod="native" namespace="Propel\TranslationBundle\Model">
+  <table name="translation_key" phpName="TranslationKey" idMethod="native">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="key_name" phpName="KeyName" type="VARCHAR" size="255" required="true"/>
+    <column name="domain" phpName="Domain" type="VARCHAR" size="255" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="false"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" required="false"/>
+    <unique name="key_domain_idx">
+      <unique-column name="key_name"/>
+      <unique-column name="domain"/>
+    </unique>
+  </table>
+  <table name="translation_content" phpName="TranslationContent" idMethod="native">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="locale" phpName="Locale" type="VARCHAR" size="10" required="true"/>
+    <column name="content" phpName="Content" type="LONGVARCHAR" required="false"/>
+    <column name="file_id" phpName="FileId" type="INTEGER" required="false"/>
+    <column name="key_id" phpName="TransUnitId" type="INTEGER" required="true"/>
+    <foreign-key foreignTable="translation_file" name="translation_content_FK_1">
+      <reference local="file_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="translation_key" name="translation_content_FK_2">
+      <reference local="key_id" foreign="id"/>
+    </foreign-key>
+    <unique name="key_locale_idx">
+      <unique-column name="key_id"/>
+      <unique-column name="locale"/>
+    </unique>
+    <index name="translation_content_FI_1">
+      <index-column name="file_id"/>
+    </index>
+    <behavior name="Timestampable"/>
+  </table>
+  <table name="translation_file" phpName="TranslationFile" idMethod="native">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="domain" phpName="Domain" type="VARCHAR" size="255" required="true"/>
+    <column name="locale" phpName="Locale" type="VARCHAR" size="10" required="true"/>
+    <column name="extension" phpName="Extension" type="VARCHAR" size="10" required="true"/>
+    <column name="path" phpName="Path" type="VARCHAR" size="255" required="true"/>
+    <column name="hash" phpName="Hash" type="VARCHAR" size="255" required="true"/>
+    <unique name="hash_idx">
+      <unique-column name="hash"/>
+    </unique>
+  </table>
+</database>
