@@ -10,7 +10,7 @@
         "propel/propel-bundle": "1.1.x-dev",
         "propel/propel1": "1.6.5",
         "symfony/symfony": "2.1.*"
-    }
+    },
     "autoload":     {
         "psr-0": { "Propel\\TranslationBundle": "" }
     },
