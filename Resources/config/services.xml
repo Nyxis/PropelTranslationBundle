@@ -8,8 +8,16 @@
 
         <parameter key="propel.translation.loader.database.class">Propel\TranslationBundle\Core\DatabaseLoader</parameter>
         <parameter key="propel.translation.cache_manager.class">Propel\TranslationBundle\Core\CacheManager</parameter>
+        <parameter key="propel.translation.file_manager.class">Propel\TranslationBundle\Core\FileManager</parameter>
         <parameter key="propel.translation.data_manager.class">Propel\TranslationBundle\Data\Propel\Manager</parameter>
         <parameter key="propel.translation.multi_app">1</parameter>
+        <parameter key="propel.translation.gen_files_dir">%kernel.root_dir%/../frontend</parameter>
+        <parameter key="propel.translation.base_layout">PropelTranslationBundle::layout.html.twig</parameter>
+        <parameter key="propel.translation.grid_input_type">text</parameter>
+        <parameter key="propel.translation.managed_locales" type="collection">
+            <parameter>en</parameter>
+            <parameter>fr</parameter>
+        </parameter>
 
     </parameters>
 
@@ -34,7 +42,9 @@
         </service>
 
         <!-- DataManager -->
-        <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%"/>
+        <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%">
+            <argument type="service" id="service_container" />
+        </service>
 
     </services>
 </container>

@@ -1,20 +1,20 @@
-lexik_translation_grid:
+propel_translation_grid:
     pattern: /translation/grid
     defaults: { _controller: "PropelTranslationBundle:Edition:grid" }
 
-lexik_translation_list:
+propel_translation_list:
     pattern: /translation/list
     defaults: { _controller: "PropelTranslationBundle:Edition:list" }
 
-lexik_translation_update:
+propel_translation_update:
     pattern: /translation/update
     defaults: { _controller: "PropelTranslationBundle:Edition:update" }
     requirements: { _method: POST }
 
-lexik_translation_new:
+propel_translation_new:
     pattern: /translation/new
     defaults: { _controller: "PropelTranslationBundle:Edition:new" }
 
-lexik_translation_invalidate_cache:
+propel_translation_invalidate_cache:
     pattern: /translation/invalidate-cache
     defaults: { _controller: "PropelTranslationBundle:Edition:invalidateCache" }

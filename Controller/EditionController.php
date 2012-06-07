@@ -1,18 +1,13 @@
 <?php
 
-namespace Lexik\Bundle\TranslationBundle\Controller;
+namespace Propel\TranslationBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Propel\TranslationBundle\Util\JQGrid\Mapper;
+use Propel\TranslationBundle\Form\TranslationKeyType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
-
-use Lexik\Bundle\TranslationBundle\Document\TransUnit as TransUnitDocument;
-use Lexik\Bundle\TranslationBundle\Model\File;
-use Lexik\Bundle\TranslationBundle\Model\TransUnit;
-use Lexik\Bundle\TranslationBundle\Form\TransUnitType;
-use Lexik\Bundle\TranslationBundle\Util\JQGrid\Mapper;
 
 /**
 * Translations edition controlller.
@@ -22,16 +17,16 @@ use Lexik\Bundle\TranslationBundle\Util\JQGrid\Mapper;
 class EditionController extends Controller
 {
     /**
-     * List trans unit element in json format.
+     * List translation keys element in json format.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function listAction()
     {
         $locales = $this->getManagedLocales();
-        $repository = $this->get('lexik_translation.storage_manager')->getRepository($this->container->getParameter('lexik_translation.trans_unit.class'));
+        $dataManager = $this->get('propel.translation.data_manager');
 
-        $transUnits = $repository->getTransUnitList(
+        $keysList = $dataManager->getKeysList(
             $locales,
             $this->get('request')->query->get('rows', 20),
             $this->get('request')->query->get('page', 1),
@@ -40,8 +35,8 @@ class EditionController extends Controller
 
         $jqGridMapper = new Mapper(
             $this->get('request'),
-            $transUnits,
-            $repository->count($locales, $this->get('request')->query->all())
+            $keysList,
+            $dataManager->countKeys($locales, $this->get('request')->query->all())
         );
 
         $response = new Response($jqGridMapper->generate($locales));
@@ -57,10 +52,10 @@ class EditionController extends Controller
      */
     public function gridAction()
     {
-        return $this->render('LexikTranslationBundle:Edition:grid.html.twig', array(
-            'layout' => $this->container->getParameter('lexik_translation.base_layout'),
-            'inputType' => $this->container->getParameter('lexik_translation.grid_input_type'),
-            'locales' => $this->getManagedLocales(),
+        return $this->render('PropelTranslationBundle:Edition:grid.html.twig', array(
+            'layout' => $this->container->getParameter('propel.translation.base_layout'),
+            'inputType' => $this->container->getParameter('propel.translation.grid_input_type'),
+            'locales' => $this->getManagedLocales()
         ));
     }
 
@@ -76,25 +71,19 @@ class EditionController extends Controller
             $result = array();
 
             if ('edit' == $request->request->get('oper')) {
-                $transUnitManager = $this->get('lexik_translation.trans_unit.manager');
-                $transUnit = $transUnitManager->getTransUnitRepository()->findOneById($request->request->get('id'));
 
-                if (!($transUnit instanceof TransUnit)) {
-                    throw new NotFoundHttpException();
+                try {
+                    $data = array_intersect_key(
+                        $request->request->all(),
+                        array_flip($this->getManagedLocales())
+                    );
+
+                    $this->get('propel.translation.data_manager')
+                        ->updateTranslationKey($request->request->get('id'), $data);
+
+                } catch(\IllegalArgumentException $e) {
+                    throw new NotFoundHttpException($e->getMessage());
                 }
-
-                $translationsContent = array();
-                foreach ($this->getManagedLocales() as $locale) {
-                    $translationsContent[$locale] = $request->request->get($locale);
-                }
-
-                $transUnitManager->updateTranslationsContent($transUnit, $translationsContent);
-
-                if ($transUnit instanceof TransUnitDocument) {
-                    $transUnit->convertMongoTimestamp();
-                }
-
-                $this->get('lexik_translation.storage_manager')->flush();
 
                 $result['success'] = true;
             }
@@ -112,11 +101,13 @@ class EditionController extends Controller
      */
     public function invalidateCacheAction()
     {
-        $this->get('translator')->removeLocalesCacheFiles($this->getManagedLocales());
+        $this->get('propel.translation.cache_manager')->removeLocalesFiles(
+            $this->getManagedLocales()
+        );
 
-        $this->get('session')->setFlash('success', $this->get('translator')->trans('translations.cache_removed', array(), 'LexikTranslationBundle'));
+        $this->get('session')->setFlash('success', 'Le cache a été vidé.');
 
-        return $this->redirect($this->generateUrl('lexik_translation_grid'));
+        return $this->redirect($this->generateUrl('propel_translation_grid'));
     }
 
     /**
@@ -126,47 +117,30 @@ class EditionController extends Controller
      */
     public function newAction()
     {
-        $om = $this->get('lexik_translation.storage_manager');
-        $transUnit = $this->get('lexik_translation.trans_unit.manager')->newInstance($this->getManagedLocales());
+        $dataManager = $this->get('propel.translation.data_manager');
+        $translationKey = $dataManager->createTranslationKey($this->getManagedLocales());
 
         $options = array(
-            'domains' => $om->getRepository('LexikTranslationBundle:TransUnit')->getAllDomains(),
-            'data_class' => $this->container->getParameter('lexik_translation.trans_unit.class'),
-            'translation_class' => $this->container->getParameter('lexik_translation.translation.class'),
+            'domains' => $dataManager->getAllDomains(),
+            'data_class' => $dataManager->getModelClassName('translation_key'),
+            'translation_content_class' => $dataManager->getModelClassName('translation_content'),
         );
 
-        $form = $this->createForm(new TransUnitType(), $transUnit, $options);
+        $form = $this->createForm(new TranslationKeyType(), $translationKey, $options);
 
         if ($this->get('request')->getMethod() == 'POST') {
             $form->bindRequest($this->get('request'));
 
             if ($form->isValid()) {
-                $translations = $transUnit->filterNotBlankTranslations(); // only keep translations with a content
 
-                // link new translations to a file to be able to export them.
-                foreach ($translations as $translation) {
-                    if (!$translation->getFile()) {
-                        $file = $this->get('lexik_translation.file.manager')->getFor(
-                            sprintf('%s.%s.yml', $transUnit->getDomain(), $translation->getLocale()),
-                            $this->container->getParameter('kernel.root_dir').'/Resources/translations'
-                        );
+                $dataManager->saveTranslationKey($translationKey);
 
-                        if ($file instanceof File) {
-                            $translation->setFile($file);
-                        }
-                    }
-                }
-
-                $transUnit->setTranslations($translations);
-                $om->persist($transUnit);
-                $om->flush();
-
-                return $this->redirect($this->generateUrl('lexik_translation_grid'));
+                return $this->redirect($this->generateUrl('propel_translation_grid'));
             }
         }
 
-        return $this->render('LexikTranslationBundle:Edition:new.html.twig', array(
-            'layout' => $this->container->getParameter('lexik_translation.base_layout'),
+        return $this->render('PropelTranslationBundle:Edition:new.html.twig', array(
+            'layout' => $this->container->getParameter('propel.translation.base_layout'),
             'form' => $form->createView(),
         ));
     }
@@ -178,6 +152,6 @@ class EditionController extends Controller
      */
     protected function getManagedLocales()
     {
-        return $this->container->getParameter('lexik_translation.managed_locales');
+        return $this->container->getParameter('propel.translation.managed_locales');
     }
 }
