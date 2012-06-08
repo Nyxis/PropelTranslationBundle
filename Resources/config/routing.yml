@@ -1,0 +1,20 @@
+propel_translation_grid:
+    pattern: /translation/grid
+    defaults: { _controller: "PropelTranslationBundle:Edition:grid" }
+
+propel_translation_list:
+    pattern: /translation/list
+    defaults: { _controller: "PropelTranslationBundle:Edition:list" }
+
+propel_translation_update:
+    pattern: /translation/update
+    defaults: { _controller: "PropelTranslationBundle:Edition:update" }
+    requirements: { _method: POST }
+
+propel_translation_new:
+    pattern: /translation/new
+    defaults: { _controller: "PropelTranslationBundle:Edition:new" }
+
+propel_translation_invalidate_cache:
+    pattern: /translation/invalidate-cache
+    defaults: { _controller: "PropelTranslationBundle:Edition:invalidateCache" }

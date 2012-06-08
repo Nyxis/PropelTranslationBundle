@@ -1,0 +1,120 @@
+{% extends layout %}
+
+{% block title %}Traductions{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets filter="?yui_css" output='css/optimized-jqgrid.css'
+        '@PropelTranslationBundle/Resources/public/lib/jqGrid/css/ui.jqgrid.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}">
+    {% endstylesheets %}
+{% endblock %}
+
+{% block content %}
+{% if app.session.hasFlash('sucess') %}
+<span>{{ app.session.getFlash('sucess') }}</span>
+{% endif %}
+
+<div>
+    <a href="{{ path('propel_translation_new') }}" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">
+        <span class="ui-button-icon-primary ui-icon ui-icon-circle-plus"></span>
+        <span class="ui-button-text">Nouvelle traduction</span>
+    </a>
+    &nbsp;
+    <a href="{{ path('propel_translation_invalidate_cache') }}" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">
+        <span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
+        <span class="ui-button-text">Invalider le cache</span>
+    </a>
+    &nbsp;
+    <button id="select-colunms" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">
+        <span class="ui-button-icon-primary ui-icon ui-icon-flag"></span>
+        <span class="ui-button-text">Afficher/Masquer des colonnes</span>
+    </button>
+    {% if inputType == 'textarea'  %}
+    <button id="save-row" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">
+        <span class="ui-button-icon-primary ui-icon ui-icon-check"></span>
+        <span class="ui-button-text">Sauvegarder la ligne</span>
+    </button>
+    {% endif %}
+</div>
+
+<br />
+
+<table id="trans-grid"></table>
+<div id="grid-nav"></div>
+{% endblock %}
+
+{% block javascript_footer %}
+    {{ parent() }}
+    {% javascripts filter="?yui_js" output='js/optimized-translator-1.js'
+        '@PropelTranslationBundle/Resources/public/lib/jqGrid/js/i18n/grid.locale-en.js'
+        '@PropelTranslationBundle/Resources/public/lib/jqGrid/js/jquery.jqGrid.min.js' %}
+        <script src="{{ asset_url }}" type="text/javascript"></script>
+    {% endjavascripts %}
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+    var columnNames = [
+        "id",
+        'domaine',
+        'clé'
+{% for locale in locales %}
+        ,'{{ locale }}'
+{% endfor %}
+    ];
+
+    var columnModel = [
+        { name: "id", index: "id", width: 40, sortable: true, editable: false, search: false }
+        ,{ name:"domain", index: "domain", width: 100, sortable: true, editable: false }
+        ,{ name:"key", index: "key", width: 150, sortable: true, editable: false }
+{% for locale in locales %}
+        ,{ name: "{{ locale }}", index: "{{ locale }}", width: 160, sortable: false, editable:true, {{ inputType == 'textarea' ? 'edittype: "textarea", ' : '' }}search: true }
+{% endfor %}
+    ];
+
+    var lastSelected, lastSaved;
+
+    jQuery("#trans-grid").jqGrid({
+        url: "{{ path('propel_translation_list') }}",
+        datatype: "json",
+        colNames: columnNames,
+        colModel: columnModel,
+        rowNum: 20,
+        rowList: [20, 40, 60],
+        pager: "#grid-nav",
+        sortname: "id",
+        viewrecords: true,
+        sortorder: "asc",
+        onSelectRow: function(id) {
+            if(id && id !== lastSelected) {
+                jQuery('#trans-grid').jqGrid("restoreRow", lastSelected);
+                jQuery('#trans-grid').jqGrid("editRow", id, true);
+                lastSelected = id;
+            }
+        },
+        editurl: "{{ path('propel_translation_update') }}",
+        caption: "grid_caption"
+    });
+
+    jQuery("#trans-grid").setGridWidth(960);
+    jQuery("#trans-grid").setGridHeight(400);
+    jQuery("#trans-grid").jqGrid("navGrid", "#grid-nav", { edit:false, add:false, del:false, search: false });
+    jQuery("#trans-grid").jqGrid("filterToolbar", { defaultSearch: "cn" });
+
+    jQuery("#select-colunms").click(function() {
+        jQuery("#trans-grid").jqGrid("columnChooser", {});
+        return false;
+    });
+
+    {% if inputType == 'textarea'  %}
+    jQuery("#save-row").click(function() {
+        if (lastSelected && lastSaved != lastSelected) {
+            jQuery('#trans-grid').saveRow(lastSelected);
+            lastSaved = lastSelected;
+        }
+    });
+	{% endif %}
+});
+//-->
+</script>
+{% endblock %}

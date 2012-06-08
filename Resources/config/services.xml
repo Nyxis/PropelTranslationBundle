@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+
+        <parameter key="propel.translation.loader.database.class">Propel\TranslationBundle\Core\DatabaseLoader</parameter>
+        <parameter key="propel.translation.cache_manager.class">Propel\TranslationBundle\Core\CacheManager</parameter>
+        <parameter key="propel.translation.file_manager.class">Propel\TranslationBundle\Core\FileManager</parameter>
+        <parameter key="propel.translation.data_manager.class">Propel\TranslationBundle\Data\Propel\Manager</parameter>
+        <parameter key="propel.translation.multi_app">1</parameter>
+        <parameter key="propel.translation.gen_files_dir">%kernel.root_dir%/../frontend</parameter>
+        <parameter key="propel.translation.base_layout">PropelTranslationBundle::layout.html.twig</parameter>
+        <parameter key="propel.translation.grid_input_type">text</parameter>
+        <parameter key="propel.translation.managed_locales" type="collection">
+            <parameter>en</parameter>
+            <parameter>fr</parameter>
+        </parameter>
+
+    </parameters>
+
+    <services>
+
+        <!-- Loader -->
+        <service id="translation.loader.database" class="%propel.translation.loader.database.class%">
+            <tag name="translation.loader" alias="database" />
+            <argument type="service" id="service_container" />
+            <call method="addDatabaseResources">
+                <argument type="service" id="translator" />
+                <argument type="service" id="propel.translation.cache_manager" />
+            </call>
+        </service>
+
+        <!-- CacheManager -->
+        <service id="propel.translation.cache_manager" class="%propel.translation.cache_manager.class%">
+            <argument>%kernel.cache_dir%/translations</argument>
+            <argument>%kernel.debug%</argument>
+            <argument>%propel.translation.multi_app%</argument>
+            <argument>%kernel.root_dir%/..</argument>
+        </service>
+
+        <!-- DataManager -->
+        <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%">
+            <argument type="service" id="service_container" />
+        </service>
+
+        <!-- Exporter -->
+        <service id="propel.translation.exporter.xliff" class="Propel\TranslationBundle\Core\Exporter\XliffExporter" />
+        <service id="propel.translation.exporter.yml" class="Propel\TranslationBundle\Core\Exporter\YamlExporter" />
+        <service id="propel.translation.exporter.php" class="Propel\TranslationBundle\Core\Exporter\PhpExporter" />
+
+        <!-- Importer -->
+        <service id="propel.translation.importer.file" class="Propel\TranslationBundle\Core\Importer\FileImporter">
+            <argument type="service" id="service_container" />
+        </service>
+
+    </services>
+</container>

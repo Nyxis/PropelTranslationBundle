@@ -1,0 +1,16 @@
+{% extends layout %}
+
+{% block content %}
+<div>
+    <div>Ajouter une traduction</div>
+    <form action="{{ path('propel_translation_new') }}" method="post">
+        {{ form_row(form.key_name) }}
+        {{ form_row(form.domain) }}
+        {% for translation in form.translation_contents %}
+            {{ form_row(translation) }}
+        {% endfor %}
+        {{ form_rest(form) }}
+        <input type="submit" id="trans-unit-submit" name="trans-unit-submit" value="Ajouter" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" />
+    </form>
+</div>
+{% endblock %}
