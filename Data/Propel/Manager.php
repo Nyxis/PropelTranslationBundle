@@ -227,15 +227,43 @@ class Manager implements DataManagerInterface
     }
 
     /**
+     * get or create a translation key for given domain and key
+     * @param string $domain
+     * @param string $key
+     * @return TranslationFile
+     */
+    public function findOrCreateTranslationKey($domain, $key)
+    {
+        $translationKey = TranslationKeyQuery::create()
+            ->filterByDomain($domain)
+            ->filterByKeyName($key)
+            ->findOne();
+
+        if($translationKey) {
+            return $translationKey;
+        }
+
+        $translationKey = new TranslationKey();
+        $translationKey->setDomain($domain);
+        $translationKey->setKeyName($key);
+        $translationKey->save();
+
+        return $translationKey;
+    }
+
+    /**
      * get or create a translation file for given domain and locale
      * @param string $domain
      * @param string $locale
      * @return TranslationFile
      */
-    public function findOrCreateTranslationFile($domain, $locale)
+    public function findOrCreateTranslationFile($domain, $locale, $filePath = null)
     {
         $fileName = sprintf('%s.%s.yml', $domain, $locale);
-        $filePath = $this->container->getParameter('propel.translation.gen_files_dir').'/Resources/translations';
+        $filePath = is_null($filePath) ?
+            $this->container->getParameter('propel.translation.gen_files_dir').'/Resources/translations' :
+            $filePath;
+
         $hash = md5($fileName.'/'.$filePath);
 
         $file = TranslationFileQuery::create()
@@ -262,7 +290,7 @@ class Manager implements DataManagerInterface
      * @param string $locale
      * @return TranslationContent
      */
-    protected function findOrCreateTranslationContent($translationKey, $locale)
+    public function findOrCreateTranslationContent($translationKey, $locale, $translationFile = null)
     {
         foreach($translationKey->getTranslationContents() as $translationContent) {
             if($translationContent->getLocale() == $locale) {
@@ -274,10 +302,12 @@ class Manager implements DataManagerInterface
         $translationContent->setLocale($locale);
         $translationContent->setTranslationKey($translationKey);
         $translationContent->setTranslationFile(
-            $this->findOrCreateTranslationFile(
-                $translationKey->getDomain(),
-                $translationContent->getLocale()
-            )
+            isset($translationFile) ?
+                $translationFile :
+                $this->findOrCreateTranslationFile(
+                    $translationKey->getDomain(),
+                    $translationContent->getLocale()
+                )
         );
 
         return $translationContent;
@@ -303,5 +333,47 @@ class Manager implements DataManagerInterface
             $translationContent->setContent($content);
             $translationKey->save();
         }
+    }
+
+    /**
+     * retrieve files for given locales and domains
+     * @param array $locales
+     * @param array $domains
+     * @return array
+     */
+    public function findFilesByLocalesAndDomaines(array $locales, array $domains)
+    {
+        $query = TranslationFileQuery::create();
+
+        if(!empty($locales)) {
+            $query->filterByLocale($locales);
+        }
+
+        if(!empty($domains)) {
+            $query->filterByDomain($domains);
+        }
+
+        return $query->find()->getData();
+    }
+
+    /**
+     * loads translations for given file
+     * @param TranslationFile $file
+     * @return array
+     */
+    public function getTranslationsForFile($file)
+    {
+        $data = TranslationContentQuery::create()
+            ->select(array('Content', 'TranslationKey.KeyName'))
+            ->filterByTranslationFile($file)
+            ->joinWithTranslationKey()
+            ->find();
+
+        $return = array();
+        foreach($data as $line) {
+            $return[$line['TranslationKey.KeyName']] = $line['Content'];
+        }
+
+        return $return;
     }
 }

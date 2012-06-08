@@ -8,7 +8,7 @@ use Propel\TranslationBundle\Model\om\BaseTranslationFile;
 /**
  * Skeleton subclass for representing a row from the 'translation_file' table.
  *
- * 
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -17,5 +17,18 @@ use Propel\TranslationBundle\Model\om\BaseTranslationFile;
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
 class TranslationFile extends BaseTranslationFile {
+
+    /**
+     * returns compilated file name
+     * @return string
+     */
+    public function getName()
+    {
+        return sprintf('%s.%s.%s',
+            $this->getDomain(),
+            $this->getLocale(),
+            $this->getExtension()
+        );
+    }
 
 } // TranslationFile

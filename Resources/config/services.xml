@@ -46,5 +46,15 @@
             <argument type="service" id="service_container" />
         </service>
 
+        <!-- Exporter -->
+        <service id="propel.translation.exporter.xliff" class="Propel\TranslationBundle\Core\Exporter\XliffExporter" />
+        <service id="propel.translation.exporter.yml" class="Propel\TranslationBundle\Core\Exporter\YamlExporter" />
+        <service id="propel.translation.exporter.php" class="Propel\TranslationBundle\Core\Exporter\PhpExporter" />
+
+        <!-- Importer -->
+        <service id="propel.translation.importer.file" class="Propel\TranslationBundle\Core\Importer\FileImporter">
+            <argument type="service" id="service_container" />
+        </service>
+
     </services>
 </container>
