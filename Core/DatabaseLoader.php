@@ -5,24 +5,26 @@ namespace Propel\TranslationBundle\Core;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use Propel\TranslationBundle\Data\DataManagerInterface;
+use Propel\TranslationBundle\Core\Cache\Manager as CacheManager;
 
 class DatabaseLoader implements LoaderInterface
 {
     /**
-     * services container
-     * @var ContainerInterface
+     * service dataManager
+     * @var DataManagerInterface
      */
-    protected $container;
+    protected $dataManager;
 
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container A ContainerInterface instance
+     * @param DataManagerInterface $dataManager A dataManagerInterface instance
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(DataManagerInterface $dataManager)
     {
-        $this->container = $container;
+        $this->dataManager = $dataManager;
     }
 
     /**
@@ -33,8 +35,7 @@ class DatabaseLoader implements LoaderInterface
     {
         $catalogue = new MessageCatalogue($locale);
 
-        $contentsLists = $this->container->get('propel.translation.data_manager')
-                ->getAllContentsByDomainAndLocale($locale, $domain);
+        $contentsLists = $this->dataManager->getAllContentsByDomainAndLocale($locale, $domain);
 
         foreach ($contentsLists as $content) {
             $catalogue->set($content['key'], $content['content'], $domain);
@@ -52,9 +53,8 @@ class DatabaseLoader implements LoaderInterface
     {
         $resources = array();
 
-        // if (!$cache->isFresh()) {
-            $resources = $this->container->get('propel.translation.data_manager')
-                ->getAllDomainsLocale();
+        if (!$cache->isFresh()) {
+            $resources = $this->dataManager->getAllDomainsLocale();
 
             $metadata = array();
             foreach ($resources as $resource) {
@@ -63,9 +63,9 @@ class DatabaseLoader implements LoaderInterface
 
             $content = sprintf("<?php return %s;", var_export($resources, true));
             $cache->write($content, $metadata);
-        // } else {
-        //     $resources = $cache->getContent();
-        // }
+        } else {
+            $resources = $cache->getContent();
+        }
 
         foreach($resources as $resource) {
             $translator->addResource('database', 'DB', $resource['locale'], $resource['domain']);

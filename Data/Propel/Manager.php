@@ -11,27 +11,25 @@ use Propel\TranslationBundle\Model\TranslationContentQuery;
 use Propel\TranslationBundle\Model\TranslationFile;
 use Propel\TranslationBundle\Model\TranslationFileQuery;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
  * Propel manager for bundle, loads and save data throught DataManagerInterface
  */
 class Manager implements DataManagerInterface
 {
     /**
-     * services container
-     * @var ContainerInterface
+     * dir to export translations
+     * @var string
      */
-    protected $container;
+    protected $exportFilePath;
 
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container A ContainerInterface instance
+     * @param string $exportFilePath dir to export translations
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct($exportFilePath)
     {
-        $this->container = $container;
+        $this->exportFilePath = $exportFilePath;
     }
 
 
@@ -260,10 +258,7 @@ class Manager implements DataManagerInterface
     public function findOrCreateTranslationFile($domain, $locale, $filePath = null)
     {
         $fileName = sprintf('%s.%s.yml', $domain, $locale);
-        $filePath = is_null($filePath) ?
-            $this->container->getParameter('propel.translation.gen_files_dir').'/Resources/translations' :
-            $filePath;
-
+        $filePath = realpath(is_null($filePath) ? $this->exportFilePath : $filePath);
         $hash = md5($fileName.'/'.$filePath);
 
         $file = TranslationFileQuery::create()

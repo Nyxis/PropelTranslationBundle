@@ -20,11 +20,21 @@ class PropelTranslationExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        // $processor = new Processor();
-        // $configuration = new Configuration();
-        // $config = $processor->processConfiguration($configuration, $configs);
+        $processor = new Processor();
+        $configuration = new Configuration();
+        $config = $processor->processConfiguration($configuration, $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        // sets parameters
+        $container->setParameter('propel.translation.managed_locales', $config['managed_locales']);
+        $container->setParameter('propel.translation.base_layout', $config['base_layout']);
+        $container->setParameter('propel.translation.grid_input_type', $config['grid_input_type']);
+        $container->setParameter('propel.translation.path_cache_app', $config['path_cache_app']);
+        $container->setParameter('propel.translation.path_export_dir', $config['path_export_dir']);
+
+        // @note use it for multi-orm
+        //$container->setParameter('propel.translation.storage', $config['storage']);
     }
 }

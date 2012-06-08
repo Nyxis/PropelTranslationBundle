@@ -6,27 +6,34 @@
 
     <parameters>
 
+        <!-- Services classes -->
         <parameter key="propel.translation.loader.database.class">Propel\TranslationBundle\Core\DatabaseLoader</parameter>
-        <parameter key="propel.translation.cache_manager.class">Propel\TranslationBundle\Core\CacheManager</parameter>
+        <parameter key="propel.translation.cache_manager.class">Propel\TranslationBundle\Core\Cache\Manager</parameter>
         <parameter key="propel.translation.file_manager.class">Propel\TranslationBundle\Core\FileManager</parameter>
         <parameter key="propel.translation.data_manager.class">Propel\TranslationBundle\Data\Propel\Manager</parameter>
-        <parameter key="propel.translation.multi_app">1</parameter>
-        <parameter key="propel.translation.gen_files_dir">%kernel.root_dir%/../frontend</parameter>
-        <parameter key="propel.translation.base_layout">PropelTranslationBundle::layout.html.twig</parameter>
-        <parameter key="propel.translation.grid_input_type">text</parameter>
-        <parameter key="propel.translation.managed_locales" type="collection">
-            <parameter>en</parameter>
-            <parameter>fr</parameter>
-        </parameter>
+
+        <!-- Injected params throught config.yml -->
+        <!-- <parameter key="propel.translation.path_cache_app" type="collection" >
+            <parameter>%kernel.root_dir%</parameter>
+        </parameter> -->
+        <!-- <parameter key="propel.translation.path_export_dir"/>%kernel.root_dir%/Resources/translations</parameter> -->
+        <!-- <parameter key="propel.translation.base_layout"/>PropelTranslationBundle::layout.html.twig</parameter> -->
+        <!-- <parameter key="propel.translation.grid_input_type"/>text</parameter> -->
+        <!-- <parameter key="propel.translation.managed_locales" type="collection" /> -->
 
     </parameters>
 
     <services>
 
+        <!-- DataManager -->
+        <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%">
+            <argument>%propel.translation.path_export_dir%</argument>
+        </service>
+
         <!-- Loader -->
         <service id="translation.loader.database" class="%propel.translation.loader.database.class%">
             <tag name="translation.loader" alias="database" />
-            <argument type="service" id="service_container" />
+            <argument type="service" id="propel.translation.data_manager" />
             <call method="addDatabaseResources">
                 <argument type="service" id="translator" />
                 <argument type="service" id="propel.translation.cache_manager" />
@@ -35,15 +42,8 @@
 
         <!-- CacheManager -->
         <service id="propel.translation.cache_manager" class="%propel.translation.cache_manager.class%">
-            <argument>%kernel.cache_dir%/translations</argument>
+            <argument>%propel.translation.path_cache_app%</argument>
             <argument>%kernel.debug%</argument>
-            <argument>%propel.translation.multi_app%</argument>
-            <argument>%kernel.root_dir%/..</argument>
-        </service>
-
-        <!-- DataManager -->
-        <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%">
-            <argument type="service" id="service_container" />
         </service>
 
         <!-- Exporter -->

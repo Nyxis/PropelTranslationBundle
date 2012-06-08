@@ -45,7 +45,7 @@ class FileImporter
 
         foreach ($messageCatalogue->all($domain) as $key => $content) {
 
-            $file = $dataManager->findOrCreateTranslationFile(
+            $translationFile = $dataManager->findOrCreateTranslationFile(
                 $domain, $locale, dirname($file->getRealPath())
             );
 
@@ -54,7 +54,7 @@ class FileImporter
             );
 
             $translationContent = $dataManager->findOrCreateTranslationContent(
-                $key, $locale, $file
+                $key, $locale, $translationFile
             );
 
             $translationContent->setContent($content);

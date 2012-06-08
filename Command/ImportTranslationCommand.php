@@ -87,7 +87,7 @@ class ImportTranslationCommand extends ContainerAwareCommand
             $importer = $this->getContainer()->get('propel.translation.importer.file');
 
             foreach ($finder as $file) {
-                $this->output->write(sprintf('<comment>Importing "%s" ... </comment>', $file->getRealPath()));
+                $this->output->write(sprintf('<comment>Importing "%s" ... </comment>', realpath($file->getRealPath())));
                 $number = $importer->import($file);
                 $this->output->writeln(sprintf('<comment>%d translations</comment>', $number));
             }
@@ -108,8 +108,8 @@ class ImportTranslationCommand extends ContainerAwareCommand
         $finder->files()
             ->name(sprintf('/(.*(%s)\.(xliff|yml|php))/', implode('|', $locales)))
             ->filter(function($file) {
-                return (bool)preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath())
-                    && (bool)!preg_match('/.*\/vendor\/.*/', $file->getRealPath());
+                return (bool)preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath()) // in properly dirs
+                    && (bool)!preg_match('/.*\/vendor\/.*/', $file->getRealPath()); // but not in cache
             });
 
         return $finder->in($path);
@@ -117,12 +117,12 @@ class ImportTranslationCommand extends ContainerAwareCommand
 
     /**
      * Remove translation cache files managed locales.
-     *
      */
     public function removeTranslationCache()
     {
-        $locales = $this->getContainer()->getParameter('lexik_translation.managed_locales');
-        $this->getContainer()->get('translator')->removeLocalesCacheFiles($locales);
+        $this->getContainer()->get('propel.translation.cache_manager')->removeLocalesFiles(
+            $this->getContainer()->getParameter('propel.translation.managed_locales')
+        );
     }
 }
 
