@@ -16,7 +16,7 @@
     <column name="locale" phpName="Locale" type="VARCHAR" size="10" required="true"/>
     <column name="content" phpName="Content" type="LONGVARCHAR" required="false"/>
     <column name="file_id" phpName="FileId" type="INTEGER" required="false"/>
-    <column name="key_id" phpName="TransUnitId" type="INTEGER" required="true"/>
+    <column name="key_id" phpName="KeyId" type="INTEGER" required="true"/>
     <foreign-key foreignTable="translation_file" name="translation_content_FK_1">
       <reference local="file_id" foreign="id"/>
     </foreign-key>

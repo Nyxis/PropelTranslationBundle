@@ -46,7 +46,7 @@ class TranslationContentTableMap extends TableMap
 		$this->addColumn('LOCALE', 'Locale', 'VARCHAR', true, 10, null);
 		$this->addColumn('CONTENT', 'Content', 'LONGVARCHAR', false, null, null);
 		$this->addForeignKey('FILE_ID', 'FileId', 'INTEGER', 'translation_file', 'ID', false, null, null);
-		$this->addForeignKey('KEY_ID', 'TransUnitId', 'INTEGER', 'translation_key', 'ID', true, null, null);
+		$this->addForeignKey('KEY_ID', 'KeyId', 'INTEGER', 'translation_key', 'ID', true, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators

@@ -405,7 +405,7 @@ abstract class BaseTranslationKeyQuery extends ModelCriteria
 	{
 		if ($translationContent instanceof TranslationContent) {
 			return $this
-				->addUsingAlias(TranslationKeyPeer::ID, $translationContent->getTransUnitId(), $comparison);
+				->addUsingAlias(TranslationKeyPeer::ID, $translationContent->getKeyId(), $comparison);
 		} elseif ($translationContent instanceof PropelCollection) {
 			return $this
 				->useTranslationContentQuery()

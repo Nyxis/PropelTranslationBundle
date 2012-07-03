@@ -85,8 +85,8 @@ abstract class BaseTranslationContentPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Locale', 'Content', 'FileId', 'TransUnitId', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'locale', 'content', 'fileId', 'transUnitId', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Locale', 'Content', 'FileId', 'KeyId', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'locale', 'content', 'fileId', 'keyId', 'createdAt', 'updatedAt', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::LOCALE, self::CONTENT, self::FILE_ID, self::KEY_ID, self::CREATED_AT, self::UPDATED_AT, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'LOCALE', 'CONTENT', 'FILE_ID', 'KEY_ID', 'CREATED_AT', 'UPDATED_AT', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'locale', 'content', 'file_id', 'key_id', 'created_at', 'updated_at', ),
@@ -100,8 +100,8 @@ abstract class BaseTranslationContentPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Locale' => 1, 'Content' => 2, 'FileId' => 3, 'TransUnitId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'locale' => 1, 'content' => 2, 'fileId' => 3, 'transUnitId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Locale' => 1, 'Content' => 2, 'FileId' => 3, 'KeyId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'locale' => 1, 'content' => 2, 'fileId' => 3, 'keyId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::LOCALE => 1, self::CONTENT => 2, self::FILE_ID => 3, self::KEY_ID => 4, self::CREATED_AT => 5, self::UPDATED_AT => 6, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'LOCALE' => 1, 'CONTENT' => 2, 'FILE_ID' => 3, 'KEY_ID' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'locale' => 1, 'content' => 2, 'file_id' => 3, 'key_id' => 4, 'created_at' => 5, 'updated_at' => 6, ),

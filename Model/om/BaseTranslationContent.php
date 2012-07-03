@@ -163,7 +163,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 	 * 
 	 * @return     int
 	 */
-	public function getTransUnitId()
+	public function getKeyId()
 	{
 		return $this->key_id;
 	}
@@ -334,7 +334,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 	 * @param      int $v new value
 	 * @return     TranslationContent The current object (for fluent API support)
 	 */
-	public function setTransUnitId($v)
+	public function setKeyId($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
@@ -350,7 +350,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 		}
 
 		return $this;
-	} // setTransUnitId()
+	} // setKeyId()
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -903,7 +903,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 				return $this->getFileId();
 				break;
 			case 4:
-				return $this->getTransUnitId();
+				return $this->getKeyId();
 				break;
 			case 5:
 				return $this->getCreatedAt();
@@ -944,7 +944,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 			$keys[1] => $this->getLocale(),
 			$keys[2] => $this->getContent(),
 			$keys[3] => $this->getFileId(),
-			$keys[4] => $this->getTransUnitId(),
+			$keys[4] => $this->getKeyId(),
 			$keys[5] => $this->getCreatedAt(),
 			$keys[6] => $this->getUpdatedAt(),
 		);
@@ -999,7 +999,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 				$this->setFileId($value);
 				break;
 			case 4:
-				$this->setTransUnitId($value);
+				$this->setKeyId($value);
 				break;
 			case 5:
 				$this->setCreatedAt($value);
@@ -1035,7 +1035,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 		if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setContent($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setFileId($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setTransUnitId($arr[$keys[4]]);
+		if (array_key_exists($keys[4], $arr)) $this->setKeyId($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
 	}
@@ -1121,7 +1121,7 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 		$copyObj->setLocale($this->getLocale());
 		$copyObj->setContent($this->getContent());
 		$copyObj->setFileId($this->getFileId());
-		$copyObj->setTransUnitId($this->getTransUnitId());
+		$copyObj->setKeyId($this->getKeyId());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1239,9 +1239,9 @@ abstract class BaseTranslationContent extends BaseObject  implements Persistent
 	public function setTranslationKey(TranslationKey $v = null)
 	{
 		if ($v === null) {
-			$this->setTransUnitId(NULL);
+			$this->setKeyId(NULL);
 		} else {
-			$this->setTransUnitId($v->getId());
+			$this->setKeyId($v->getId());
 		}
 
 		$this->aTranslationKey = $v;

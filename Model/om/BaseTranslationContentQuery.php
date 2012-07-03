@@ -25,7 +25,7 @@ use Propel\TranslationBundle\Model\TranslationKey;
  * @method     TranslationContentQuery orderByLocale($order = Criteria::ASC) Order by the locale column
  * @method     TranslationContentQuery orderByContent($order = Criteria::ASC) Order by the content column
  * @method     TranslationContentQuery orderByFileId($order = Criteria::ASC) Order by the file_id column
- * @method     TranslationContentQuery orderByTransUnitId($order = Criteria::ASC) Order by the key_id column
+ * @method     TranslationContentQuery orderByKeyId($order = Criteria::ASC) Order by the key_id column
  * @method     TranslationContentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     TranslationContentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -33,7 +33,7 @@ use Propel\TranslationBundle\Model\TranslationKey;
  * @method     TranslationContentQuery groupByLocale() Group by the locale column
  * @method     TranslationContentQuery groupByContent() Group by the content column
  * @method     TranslationContentQuery groupByFileId() Group by the file_id column
- * @method     TranslationContentQuery groupByTransUnitId() Group by the key_id column
+ * @method     TranslationContentQuery groupByKeyId() Group by the key_id column
  * @method     TranslationContentQuery groupByCreatedAt() Group by the created_at column
  * @method     TranslationContentQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -56,7 +56,7 @@ use Propel\TranslationBundle\Model\TranslationKey;
  * @method     TranslationContent findOneByLocale(string $locale) Return the first TranslationContent filtered by the locale column
  * @method     TranslationContent findOneByContent(string $content) Return the first TranslationContent filtered by the content column
  * @method     TranslationContent findOneByFileId(int $file_id) Return the first TranslationContent filtered by the file_id column
- * @method     TranslationContent findOneByTransUnitId(int $key_id) Return the first TranslationContent filtered by the key_id column
+ * @method     TranslationContent findOneByKeyId(int $key_id) Return the first TranslationContent filtered by the key_id column
  * @method     TranslationContent findOneByCreatedAt(string $created_at) Return the first TranslationContent filtered by the created_at column
  * @method     TranslationContent findOneByUpdatedAt(string $updated_at) Return the first TranslationContent filtered by the updated_at column
  *
@@ -64,7 +64,7 @@ use Propel\TranslationBundle\Model\TranslationKey;
  * @method     array findByLocale(string $locale) Return TranslationContent objects filtered by the locale column
  * @method     array findByContent(string $content) Return TranslationContent objects filtered by the content column
  * @method     array findByFileId(int $file_id) Return TranslationContent objects filtered by the file_id column
- * @method     array findByTransUnitId(int $key_id) Return TranslationContent objects filtered by the key_id column
+ * @method     array findByKeyId(int $key_id) Return TranslationContent objects filtered by the key_id column
  * @method     array findByCreatedAt(string $created_at) Return TranslationContent objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return TranslationContent objects filtered by the updated_at column
  *
@@ -369,14 +369,14 @@ abstract class BaseTranslationContentQuery extends ModelCriteria
 	 *
 	 * Example usage:
 	 * <code>
-	 * $query->filterByTransUnitId(1234); // WHERE key_id = 1234
-	 * $query->filterByTransUnitId(array(12, 34)); // WHERE key_id IN (12, 34)
-	 * $query->filterByTransUnitId(array('min' => 12)); // WHERE key_id > 12
+	 * $query->filterByKeyId(1234); // WHERE key_id = 1234
+	 * $query->filterByKeyId(array(12, 34)); // WHERE key_id IN (12, 34)
+	 * $query->filterByKeyId(array('min' => 12)); // WHERE key_id > 12
 	 * </code>
 	 *
 	 * @see       filterByTranslationKey()
 	 *
-	 * @param     mixed $transUnitId The value to use as filter.
+	 * @param     mixed $keyId The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -384,16 +384,16 @@ abstract class BaseTranslationContentQuery extends ModelCriteria
 	 *
 	 * @return    TranslationContentQuery The current query, for fluid interface
 	 */
-	public function filterByTransUnitId($transUnitId = null, $comparison = null)
+	public function filterByKeyId($keyId = null, $comparison = null)
 	{
-		if (is_array($transUnitId)) {
+		if (is_array($keyId)) {
 			$useMinMax = false;
-			if (isset($transUnitId['min'])) {
-				$this->addUsingAlias(TranslationContentPeer::KEY_ID, $transUnitId['min'], Criteria::GREATER_EQUAL);
+			if (isset($keyId['min'])) {
+				$this->addUsingAlias(TranslationContentPeer::KEY_ID, $keyId['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($transUnitId['max'])) {
-				$this->addUsingAlias(TranslationContentPeer::KEY_ID, $transUnitId['max'], Criteria::LESS_EQUAL);
+			if (isset($keyId['max'])) {
+				$this->addUsingAlias(TranslationContentPeer::KEY_ID, $keyId['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -403,7 +403,7 @@ abstract class BaseTranslationContentQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(TranslationContentPeer::KEY_ID, $transUnitId, $comparison);
+		return $this->addUsingAlias(TranslationContentPeer::KEY_ID, $keyId, $comparison);
 	}
 
 	/**
