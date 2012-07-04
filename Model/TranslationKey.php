@@ -17,5 +17,23 @@ use Propel\TranslationBundle\Model\om\BaseTranslationKey;
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
 class TranslationKey extends BaseTranslationKey {
+  
+  /**
+  * get the content of the translation for a instance of TranslationKey
+	* @param string $locale locale
+	*
+	* @return string $content content
+	*/
+  public function getTranslation($locale)
+  {
+		$filterByLocale = new \Criteria();
+		$filterByLocale->add(TranslationContentPeer::LOCALE, $locale);
+		$contents = $this->getTranslationContents($filterByLocale);
 
+		if($content = $contents->getFirst()) {
+			return $content->getContent();
+		}
+
+		return '';
+	}
 } // TranslationKey
