@@ -12,8 +12,8 @@ interface ExporterInterface
     /**
      * Export translations in to the given file.
      *
-     * @param string $file
-     * @param array $translations
+     * @param  string  $file
+     * @param  array   $translations
      * @return boolean
      */
     public function export($file, $translations);

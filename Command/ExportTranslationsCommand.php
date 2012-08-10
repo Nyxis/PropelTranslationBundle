@@ -3,7 +3,6 @@
 namespace Propel\TranslationBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -109,9 +108,9 @@ class ExportTranslationsCommand extends ContainerAwareCommand
     /**
      * If the output file exists we merge existing translations with those from the database.
      *
-     * @param File $file
-     * @param string $outputFile
-     * @param array $translations
+     * @param  File   $file
+     * @param  string $outputFile
+     * @param  array  $translations
      * @return array
      */
     protected function mergeExistingTranslations($file, $outputFile, $translations)
@@ -130,7 +129,7 @@ class ExportTranslationsCommand extends ContainerAwareCommand
      * Export translations.
      *
      * @param string $outputFile
-     * @param array $translations
+     * @param array  $translations
      * @param string $format
      */
     protected function doExport($outputFile, $translations, $format)

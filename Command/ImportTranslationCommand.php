@@ -3,13 +3,10 @@
 namespace Propel\TranslationBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Component\Translation\MessageCatalogueInterface;
 
 /**
 * Imports translation files content in the database.
@@ -99,7 +96,7 @@ class ImportTranslationCommand extends ContainerAwareCommand
     /**
      * Return a Finder object if $path has a Resources/translations folder.
      *
-     * @param string $path
+     * @param  string                          $path
      * @return Symfony\Component\Finder\Finder
      */
     protected function findTranslationsFiles($path, array $locales)
@@ -108,8 +105,8 @@ class ImportTranslationCommand extends ContainerAwareCommand
         $finder->files()
             ->name(sprintf('/(.*(%s)\.(xliff|yml|php))/', implode('|', $locales)))
             ->filter(function($file) {
-                return (bool)preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath()) // in properly dirs
-                    && (bool)!preg_match('/.*\/vendor\/.*/', $file->getRealPath()); // but not in cache
+                return (bool) preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath()) // in properly dirs
+                    && (bool) !preg_match('/.*\/vendor\/.*/', $file->getRealPath()); // but not in cache
             });
 
         return $finder->in($path);
@@ -125,5 +122,4 @@ class ImportTranslationCommand extends ContainerAwareCommand
         );
     }
 }
-
 

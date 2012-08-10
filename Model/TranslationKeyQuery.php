@@ -4,7 +4,6 @@ namespace Propel\TranslationBundle\Model;
 
 use Propel\TranslationBundle\Model\om\BaseTranslationKeyQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'translation_key' table.
  *
@@ -16,12 +15,12 @@ use Propel\TranslationBundle\Model\om\BaseTranslationKeyQuery;
  *
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
-class TranslationKeyQuery extends BaseTranslationKeyQuery {
-
+class TranslationKeyQuery extends BaseTranslationKeyQuery
+{
     /**
      * filter on all locales @param, and filter by a content in options
-     * @param array $locales locales to filter with
-     * @param array $options
+     * @param  array               $locales locales to filter with
+     * @param  array               $options
      * @return TranslationKeyQuery
      */
     public function filterByLocaleAndOptions(array $locales = null, array $options = null)
@@ -55,7 +54,7 @@ class TranslationKeyQuery extends BaseTranslationKeyQuery {
 
     /**
      * filters on a domain or a key if search mode is active
-     * @param array $filters
+     * @param  array               $filters
      * @return TranslationKeyQuery
      */
     public function filterOnKeyOrDomain(array $filters = array())

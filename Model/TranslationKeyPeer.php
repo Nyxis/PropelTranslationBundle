@@ -4,11 +4,10 @@ namespace Propel\TranslationBundle\Model;
 
 use Propel\TranslationBundle\Model\om\BaseTranslationKeyPeer;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'translation_key' table.
  *
- * 
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -16,6 +15,6 @@ use Propel\TranslationBundle\Model\om\BaseTranslationKeyPeer;
  *
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
-class TranslationKeyPeer extends BaseTranslationKeyPeer {
-
+class TranslationKeyPeer extends BaseTranslationKeyPeer
+{
 } // TranslationKeyPeer

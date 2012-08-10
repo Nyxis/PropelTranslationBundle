@@ -81,7 +81,7 @@ class EditionController extends Controller
                     $this->get('propel.translation.data_manager')
                         ->updateTranslationKey($request->request->get('id'), $data);
 
-                } catch(\IllegalArgumentException $e) {
+                } catch (\IllegalArgumentException $e) {
                     throw new NotFoundHttpException($e->getMessage());
                 }
 

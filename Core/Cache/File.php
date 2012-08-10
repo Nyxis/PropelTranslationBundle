@@ -25,8 +25,8 @@ class File extends ConfigCache
     /**
      * Constructor.
      *
-     * @param string  $filepath  The absolute cache path
-     * @param Boolean $debug Whether debugging is enabled or not
+     * @param string  $filepath The absolute cache path
+     * @param Boolean $debug    Whether debugging is enabled or not
      */
     public function __construct($filepath, $debug)
     {

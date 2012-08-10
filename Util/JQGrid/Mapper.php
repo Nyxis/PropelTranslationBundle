@@ -28,8 +28,8 @@ class Mapper
      * Construct.
      *
      * @param Request $request
-     * @param array $datas
-     * @param int $total
+     * @param array   $datas
+     * @param int     $total
      */
     public function __construct(\Symfony\Component\HttpFoundation\Request $request, $datas, $total)
     {
@@ -41,8 +41,8 @@ class Mapper
     /**
      * Create the jqgrid content.
      *
-     * @param array $locales
-     * @param boolean $jsonEncode
+     * @param  array   $locales
+     * @param  boolean $jsonEncode
      * @return mixed
      */
     public function generate($locales, $jsonEncode = true)

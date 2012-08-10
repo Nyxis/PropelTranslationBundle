@@ -4,7 +4,6 @@ namespace Propel\TranslationBundle\Model;
 
 use Propel\TranslationBundle\Model\om\BaseTranslationFileQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'translation_file' table.
  *
@@ -16,6 +15,6 @@ use Propel\TranslationBundle\Model\om\BaseTranslationFileQuery;
  *
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
-class TranslationFileQuery extends BaseTranslationFileQuery {
-
+class TranslationFileQuery extends BaseTranslationFileQuery
+{
 } // TranslationFileQuery

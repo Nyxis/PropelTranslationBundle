@@ -67,7 +67,7 @@ class DatabaseLoader implements LoaderInterface
             $resources = $cache->getContent();
         }
 
-        foreach($resources as $resource) {
+        foreach ($resources as $resource) {
             $translator->addResource('database', 'DB', $resource['locale'], $resource['domain']);
         }
     }

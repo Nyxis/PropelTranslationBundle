@@ -20,13 +20,13 @@ class Manager
      * Constructor.
      *
      * @param string $cacheDir
-     * @param bool $debug
+     * @param bool   $debug
      * @param string $projectRootDir
      */
     public function __construct(array $cacheDirList, $debug)
     {
         $this->cacheFileList = array();
-        foreach($cacheDirList as $cacheDir) {
+        foreach ($cacheDirList as $cacheDir) {
             $this->cacheFileList[] = new File(sprintf('%s/database.resources.php', $cacheDir), $debug);
         }
     }
@@ -37,8 +37,8 @@ class Manager
      */
     public function isFresh()
     {
-        foreach($this->cacheFileList as $cacheFile) {
-            if(!$cacheFile->isFresh()) {
+        foreach ($this->cacheFileList as $cacheFile) {
+            if (!$cacheFile->isFresh()) {
                 return false;
             }
         }
@@ -49,11 +49,11 @@ class Manager
     /**
      * write content and metadata in managed cache files
      * @param string $content
-     * @param mixed $metadata
+     * @param mixed  $metadata
      */
     public function write($content, $metadata)
     {
-        foreach($this->cacheFileList as $cacheFile) {
+        foreach ($this->cacheFileList as $cacheFile) {
             $cacheFile->write($content, $metadata);
         }
     }
@@ -65,7 +65,7 @@ class Manager
     public function getContent()
     {
         $return = array();
-        foreach($this->cacheFileList as $cacheFile) {
+        foreach ($this->cacheFileList as $cacheFile) {
             $return = array_replace_recursive(
                 $return, include $cacheFile->getFilepath()
             );
@@ -76,7 +76,7 @@ class Manager
 
     /**
      * removes all cache files for locales @params
-     * @param array $locales list of locales to remove
+     * @param  array            $locales list of locales to remove
      * @throws RuntimeException
      */
     public function removeLocalesFiles(array $locales)
@@ -84,19 +84,20 @@ class Manager
         $finder = new Finder();
         $finder->files()
             ->filter(function($file){ // filter "cache" directories
+
                 return preg_match('/.*\/cache\/[\w]+\/translations\/.*/', $file->getRealPath());
             });
 
-        foreach($locales as $locale) { // base catalogues and meta files
+        foreach ($locales as $locale) { // base catalogues and meta files
             $finder->name(sprintf('catalogue.%s.php*', $locale));
         }
 
-        foreach($this->cacheFileList as $cacheFile) {
+        foreach ($this->cacheFileList as $cacheFile) {
             $finder->name($cacheFile->getFilename().'*') // for meta too
                 ->in($cacheFile->getDirname()); // scratch only managed directories
         }
 
-        foreach($finder as $file) {
+        foreach ($finder as $file) {
             if (!unlink($file->getRealpath())) {
                 throw new \RuntimeException(sprintf('Delete "%s" cache file failed.',
                     $file->getRealpath()

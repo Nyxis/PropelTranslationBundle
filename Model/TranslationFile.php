@@ -4,7 +4,6 @@ namespace Propel\TranslationBundle\Model;
 
 use Propel\TranslationBundle\Model\om\BaseTranslationFile;
 
-
 /**
  * Skeleton subclass for representing a row from the 'translation_file' table.
  *
@@ -16,8 +15,8 @@ use Propel\TranslationBundle\Model\om\BaseTranslationFile;
  *
  * @package    propel.generator.vendor.quentincerny.propel-translation-bundle.Propel.TranslationBundle.Model
  */
-class TranslationFile extends BaseTranslationFile {
-
+class TranslationFile extends BaseTranslationFile
+{
     /**
      * returns compilated file name
      * @return string

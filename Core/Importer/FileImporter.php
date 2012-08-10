@@ -30,7 +30,7 @@ class FileImporter
     /**
      * Impoort the given file and return the number of inserted translations.
      *
-     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param  \Symfony\Component\Finder\SplFileInfo $file
      * @return int
      */
     public function import(\Symfony\Component\Finder\SplFileInfo $file)

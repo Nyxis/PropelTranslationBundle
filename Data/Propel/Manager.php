@@ -32,7 +32,6 @@ class Manager implements DataManagerInterface
         $this->exportFilePath = $exportFilePath;
     }
 
-
     /**
      * model classes alias mapping
      * @var array
@@ -45,7 +44,7 @@ class Manager implements DataManagerInterface
 
     /**
      * return model class name for alias @params
-     * @param string $alias alias of classe searched
+     * @param  string $alias alias of classe searched
      * @return string
      */
     public function getModelClassName($alias)
@@ -59,7 +58,6 @@ class Manager implements DataManagerInterface
 
         return $this->modelAliases[$alias];
     }
-
 
     /**
      * returns all domains
@@ -88,7 +86,7 @@ class Manager implements DataManagerInterface
             ->find();
 
         $return = array();
-        foreach($data as $line) {
+        foreach ($data as $line) {
             $return[] = array(
                 'locale' => $line['TranslationContent.Locale'],
                 'domain' => $line['DISTINCTDomain']
@@ -100,8 +98,8 @@ class Manager implements DataManagerInterface
 
     /**
      * returns all translations contents for given locale and domain
-     * @param string $domain
-     * @param string $locale
+     * @param  string $domain
+     * @param  string $locale
      * @return array
      */
     public function getAllContentsByDomainAndLocale($locale, $domain)
@@ -116,7 +114,7 @@ class Manager implements DataManagerInterface
             ->getData();
 
         $return = array();
-        foreach($data as $line) {
+        foreach ($data as $line) {
             $return[] = array(
                 'key' => $line['TranslationKey.KeyName'],
                 'content' => $line['Content']
@@ -128,10 +126,10 @@ class Manager implements DataManagerInterface
 
     /**
      * returns all keys as a paginated liste
-     * @param array $locales locales to load
-     * @param int $rows
-     * @param int $page
-     * @param array $filters
+     * @param  array $locales locales to load
+     * @param  int   $rows
+     * @param  int   $page
+     * @param  array $filters
      * @return array
      */
     public function getKeysList(array $locales = null, $rows = 20, $page = 1, array $filters = array())
@@ -166,8 +164,8 @@ class Manager implements DataManagerInterface
 
     /**
      * count all TranslationKeys records
-     * @param array $locales
-     * @param array $filters
+     * @param  array $locales
+     * @param  array $filters
      * @return int
      */
     public function countKeys(array $locales, array $filters = array())
@@ -182,14 +180,14 @@ class Manager implements DataManagerInterface
 
     /**
      * creates a new TranslationKey and TranslationContent for locales @params
-     * @param array $locales
+     * @param  array          $locales
      * @return TranslationKey
      */
     public function createTranslationKey($locales)
     {
         $translationKey = new TranslationKey();
 
-        foreach($locales as $locale) {
+        foreach ($locales as $locale) {
             $translationContent = new TranslationContent();
             $translationContent->setLocale($locale);
             $translationContent->setTranslationKey($translationKey);
@@ -205,8 +203,8 @@ class Manager implements DataManagerInterface
     public function saveTranslationKey($translationKey)
     {
         $translationContents = $translationKey->getTranslationContents();
-        foreach($translationContents as $translationContent) {
-            if(!strlen($translationContent->getContent())) {
+        foreach ($translationContents as $translationContent) {
+            if (!strlen($translationContent->getContent())) {
                 $translationContents->setTranslationKey(null);
                 continue; // only filled translation are stored
             }
@@ -226,8 +224,8 @@ class Manager implements DataManagerInterface
 
     /**
      * get or create a translation key for given domain and key
-     * @param string $domain
-     * @param string $key
+     * @param  string          $domain
+     * @param  string          $key
      * @return TranslationFile
      */
     public function findOrCreateTranslationKey($domain, $key)
@@ -237,7 +235,7 @@ class Manager implements DataManagerInterface
             ->filterByKeyName($key)
             ->findOne();
 
-        if($translationKey) {
+        if ($translationKey) {
             return $translationKey;
         }
 
@@ -251,8 +249,8 @@ class Manager implements DataManagerInterface
 
     /**
      * get or create a translation file for given domain and locale
-     * @param string $domain
-     * @param string $locale
+     * @param  string          $domain
+     * @param  string          $locale
      * @return TranslationFile
      */
     public function findOrCreateTranslationFile($domain, $locale, $filePath = null)
@@ -265,7 +263,7 @@ class Manager implements DataManagerInterface
             ->filterByHash($hash)
             ->findOne();
 
-        if(!$file) {
+        if (!$file) {
             $file = new TranslationFile();
 
             $file->setDomain($domain);
@@ -281,14 +279,14 @@ class Manager implements DataManagerInterface
 
     /**
      * retrieve or create the translation content for given locale and key
-     * @param TranslationKey $translationKey
-     * @param string $locale
+     * @param  TranslationKey     $translationKey
+     * @param  string             $locale
      * @return TranslationContent
      */
     public function findOrCreateTranslationContent($translationKey, $locale, $translationFile = null)
     {
-        foreach($translationKey->getTranslationContents() as $translationContent) {
-            if($translationContent->getLocale() == $locale) {
+        foreach ($translationKey->getTranslationContents() as $translationContent) {
+            if ($translationContent->getLocale() == $locale) {
                 return $translationContent;
             }
         }
@@ -310,8 +308,8 @@ class Manager implements DataManagerInterface
 
     /**
      * updates translations in database for id @params with values @params
-     * @param int $translationKeyId
-     * @param array $data array indexed locale => content
+     * @param  int                      $translationKeyId
+     * @param  array                    $data             array indexed locale => content
      * @throws IllegalArgumentException
      */
     public function updateTranslationKey($translationKeyId, array $data)
@@ -319,11 +317,11 @@ class Manager implements DataManagerInterface
         $translationKey = TranslationKeyQuery::create()
             ->findPk($translationKeyId);
 
-        if(!$translationKey) {
+        if (!$translationKey) {
             throw new \IllegalArgumentException('No translationKey found for id '.$translationKeyId);
         }
 
-        foreach($data as $locale => $content) {
+        foreach ($data as $locale => $content) {
             $translationContent = $this->findOrCreateTranslationContent($translationKey, $locale);
             $translationContent->setContent($content);
             $translationKey->save();
@@ -332,19 +330,19 @@ class Manager implements DataManagerInterface
 
     /**
      * retrieve files for given locales and domains
-     * @param array $locales
-     * @param array $domains
+     * @param  array $locales
+     * @param  array $domains
      * @return array
      */
     public function findFilesByLocalesAndDomaines(array $locales, array $domains)
     {
         $query = TranslationFileQuery::create();
 
-        if(!empty($locales)) {
+        if (!empty($locales)) {
             $query->filterByLocale($locales);
         }
 
-        if(!empty($domains)) {
+        if (!empty($domains)) {
             $query->filterByDomain($domains);
         }
 
@@ -353,7 +351,7 @@ class Manager implements DataManagerInterface
 
     /**
      * loads translations for given file
-     * @param TranslationFile $file
+     * @param  TranslationFile $file
      * @return array
      */
     public function getTranslationsForFile($file)
@@ -365,7 +363,7 @@ class Manager implements DataManagerInterface
             ->find();
 
         $return = array();
-        foreach($data as $line) {
+        foreach ($data as $line) {
             $return[$line['TranslationKey.KeyName']] = $line['Content'];
         }
 
