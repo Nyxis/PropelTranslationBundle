@@ -1,0 +1,4 @@
+composer.phar
+composer.lock
+Model/om/*
+Model/map/*
