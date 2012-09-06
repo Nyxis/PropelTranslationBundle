@@ -30,6 +30,8 @@ class PropelTranslationExtension extends Extension
         // sets parameters
         $container->setParameter('propel.translation.managed_locales', $config['managed_locales']);
         $container->setParameter('propel.translation.base_layout', $config['base_layout']);
+        $container->setParameter('propel.translation.grid_template', $config['grid_template']);
+        $container->setParameter('propel.translation.new_template', $config['new_template']);
         $container->setParameter('propel.translation.grid_input_type', $config['grid_input_type']);
         $container->setParameter('propel.translation.path_cache_app', $config['path_cache_app']);
         $container->setParameter('propel.translation.path_export_dir', $config['path_export_dir']);

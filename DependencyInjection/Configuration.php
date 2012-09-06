@@ -36,6 +36,16 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('PropelTranslationBundle::layout.html.twig')
                 ->end()
 
+                ->scalarNode('grid_template')
+                    ->cannotBeEmpty()
+                    ->defaultValue('PropelTranslationBundle:Edition:grid.html.twig')
+                ->end()
+
+                ->scalarNode('new_template')
+                    ->cannotBeEmpty()
+                    ->defaultValue('PropelTranslationBundle:Edition:new.html.twig')
+                ->end()
+
                 ->arrayNode('managed_locales')
                     ->isRequired()
                     ->cannotBeEmpty()

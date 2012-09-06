@@ -52,7 +52,7 @@ class EditionController extends Controller
      */
     public function gridAction()
     {
-        return $this->render('PropelTranslationBundle:Edition:grid.html.twig', array(
+        return $this->render($this->container->getParameter('propel.translation.grid_template'), array(
             'layout' => $this->container->getParameter('propel.translation.base_layout'),
             'inputType' => $this->container->getParameter('propel.translation.grid_input_type'),
             'locales' => $this->getManagedLocales()
@@ -139,7 +139,7 @@ class EditionController extends Controller
             }
         }
 
-        return $this->render('PropelTranslationBundle:Edition:new.html.twig', array(
+        return $this->render($this->container->getParameter('propel.translation.new_template'), array(
             'layout' => $this->container->getParameter('propel.translation.base_layout'),
             'form' => $form->createView(),
         ));
