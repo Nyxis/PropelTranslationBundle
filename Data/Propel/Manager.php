@@ -203,11 +203,12 @@ class Manager implements DataManagerInterface
     public function saveTranslationKey($translationKey)
     {
         $translationKeyCheck = TranslationKeyQuery::create()
+            ->select('Id')
             ->filterByDomain($translationKey->getDomain())
             ->filterByKeyName($translationKey->getKeyName())
-            ->findOne();
+            ->count();
 
-        if ($translationKeyCheck) {
+        if (!empty($translationKeyCheck)) {
             return null;
         }
 

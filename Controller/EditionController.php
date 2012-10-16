@@ -134,7 +134,7 @@ class EditionController extends Controller
             if ($form->isValid()) {
 
                 if (null === $dataManager->saveTranslationKey($translationKey)) {
-                    $this->get('session')->setFlash('error', 'La clé existe déjà.');
+                    $this->get('session')->setFlash('error', 'La clé de traduction "'.$translationKey->getKeyName().'" existe déjà pour le domaine "'.$translationKey->getDomain().'".');
                 } else {
                     return $this->redirect($this->generateUrl('propel_translation_grid'));
                 }
