@@ -202,6 +202,16 @@ class Manager implements DataManagerInterface
      */
     public function saveTranslationKey($translationKey)
     {
+        $translationKeyCheck = TranslationKeyQuery::create()
+            ->select('Id')
+            ->filterByDomain($translationKey->getDomain())
+            ->filterByKeyName($translationKey->getKeyName())
+            ->count();
+
+        if (!empty($translationKeyCheck)) {
+            return null;
+        }
+
         $translationContents = $translationKey->getTranslationContents();
         foreach ($translationContents as $translationContent) {
             if (!strlen($translationContent->getContent())) {
@@ -219,7 +229,7 @@ class Manager implements DataManagerInterface
             }
         }
 
-        $translationKey->save();
+        return $translationKey->save();
     }
 
     /**
