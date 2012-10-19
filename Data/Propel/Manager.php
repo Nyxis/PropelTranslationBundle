@@ -214,8 +214,8 @@ class Manager implements DataManagerInterface
 
         $translationContents = $translationKey->getTranslationContents();
         foreach ($translationContents as $translationContent) {
-            if (!strlen($translationContent->getContent())) {
-                $translationContents->setTranslationKey(null);
+            if (strlen($translationContent->getContent()) == 0) {
+                //$translationContents->setTranslationKey(null);
                 continue; // only filled translation are stored
             }
 
