@@ -38,7 +38,7 @@ class DatabaseLoader implements LoaderInterface
         $contentsLists = $this->dataManager->getAllContentsByDomainAndLocale($locale, $domain);
 
         foreach ($contentsLists as $content) {
-            $catalogue->set($content['key'], $content['content'], $domain);
+            $catalogue->set($content['keyName'], $content['content'], $domain);
         }
 
         return $catalogue;
