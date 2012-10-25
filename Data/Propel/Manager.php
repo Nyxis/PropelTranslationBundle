@@ -116,7 +116,7 @@ class Manager implements DataManagerInterface
         $return = array();
         foreach ($data as $line) {
             $return[] = array(
-                'key' => $line['TranslationKey.KeyName'],
+                'keyName' => $line['TranslationKey.KeyName'],
                 'content' => $line['Content']
             );
         }

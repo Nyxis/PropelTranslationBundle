@@ -37,7 +37,7 @@ class TranslationKeyQuery extends BaseTranslationKeyQuery
 
         foreach ($locales as $locale) {
             if (!empty($options[$locale])) {
-                $subQuery->filterByContent(sprintf("'%%%s%%'", $options[$locale]));
+                $subQuery->filterByContent(sprintf('%%%s%%', $options[$locale]));
             }
         }
 
@@ -64,11 +64,11 @@ class TranslationKeyQuery extends BaseTranslationKeyQuery
         }
 
         if (!empty($filters['domain'])) {
-            $this->fitlerByDomain(sprintf('%%%s%%', $filters['domain']));
+            $this->filterByDomain(sprintf('%%%s%%', $filters['domain']));
         }
 
-        if (!empty($filters['key'])) {
-            $this->filterByKeyName(sprintf('%%%s%%', $filters['key']));
+        if (!empty($filters['keyName'])) {
+            $this->filterByKeyName(sprintf('%%%s%%', $filters['keyName']));
         }
 
         return $this;

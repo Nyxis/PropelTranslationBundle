@@ -66,7 +66,7 @@ $(document).ready(function() {
     var columnModel = [
         { name: "id", index: "id", width: 40, sortable: true, editable: false, search: false }
         ,{ name:"domain", index: "domain", width: 100, sortable: true, editable: false }
-        ,{ name:"key", index: "key", width: 150, sortable: true, editable: false }
+        ,{ name:"keyName", index: "keyName", width: 150, sortable: true, editable: false }
 {% for locale in locales %}
         ,{ name: "{{ locale }}", index: "{{ locale }}", width: 160, sortable: false, editable:true, {{ inputType == 'textarea' ? 'edittype: "textarea", ' : '' }}search: true }
 {% endfor %}
