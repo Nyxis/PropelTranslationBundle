@@ -116,7 +116,7 @@ class Manager implements DataManagerInterface
         $return = array();
         foreach ($data as $line) {
             $return[] = array(
-                'key' => $line['TranslationKey.KeyName'],
+                'keyName' => $line['TranslationKey.KeyName'],
                 'content' => $line['Content']
             );
         }
@@ -202,10 +202,19 @@ class Manager implements DataManagerInterface
      */
     public function saveTranslationKey($translationKey)
     {
+        $translationKeyCheck = TranslationKeyQuery::create()
+            ->select('Id')
+            ->filterByDomain($translationKey->getDomain())
+            ->filterByKeyName($translationKey->getKeyName())
+            ->count();
+
+        if (!empty($translationKeyCheck)) {
+            return null;
+        }
+
         $translationContents = $translationKey->getTranslationContents();
         foreach ($translationContents as $translationContent) {
-            if (!strlen($translationContent->getContent())) {
-                $translationContents->setTranslationKey(null);
+            if (strlen($translationContent->getContent()) == 0) {
                 continue; // only filled translation are stored
             }
 
@@ -219,7 +228,7 @@ class Manager implements DataManagerInterface
             }
         }
 
-        $translationKey->save();
+        return $translationKey->save();
     }
 
     /**
