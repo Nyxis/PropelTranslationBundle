@@ -52,9 +52,8 @@ class FileImporter
             $key = $dataManager->findOrCreateTranslationKey($domain, $key);
             $translationContent = $dataManager->findOrCreateTranslationContent($key, $locale, $translationFile);
 
-            $content = $translationContent->getContent();
-
-            if (!empty($content)) {
+            $actualContent = $translationContent->getContent();
+            if (!empty($actualContent) || empty($content)) {
                 continue;
             }
 
