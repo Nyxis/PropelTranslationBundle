@@ -47,7 +47,7 @@ class ImportTranslationCommand extends ContainerAwareCommand
         $this->input = $input;
         $this->output = $output;
 
-        $this->output->writeln('<info>*** Importing translation files ***</info>');
+        $this->output->writeln('>>> <comment>Importing translation files</comment>');
         $this->importAppTranslationFiles(
             $this->getContainer()->getParameter('propel.translation.managed_locales')
         );
@@ -74,7 +74,7 @@ class ImportTranslationCommand extends ContainerAwareCommand
     }
 
     /**
-     * Imports some translations files.
+     * Imports some translations files
      *
      * @param Finder $finder
      */
@@ -84,9 +84,10 @@ class ImportTranslationCommand extends ContainerAwareCommand
             $importer = $this->getContainer()->get('propel.translation.importer.file');
 
             foreach ($finder as $file) {
-                $this->output->write(sprintf('<comment>Importing "%s" ... </comment>', realpath($file->getRealPath())));
                 $number = $importer->import($file);
-                $this->output->writeln(sprintf('<comment>%d translations</comment>', $number));
+                if ($number) {
+                    $this->output->writeln(sprintf('> <info>translations+%d</info> : %s', $number, realpath($file->getRealPath())));
+                }
             }
         } else {
             $this->output->writeln('<comment>No file to import for managed locales.</comment>');
