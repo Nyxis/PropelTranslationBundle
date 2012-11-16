@@ -49,13 +49,14 @@ class FileImporter
                 $domain, $locale, dirname($file->getRealPath())
             );
 
-            $key = $dataManager->findOrCreateTranslationKey(
-                $domain, $key
-            );
+            $key = $dataManager->findOrCreateTranslationKey($domain, $key);
+            $translationContent = $dataManager->findOrCreateTranslationContent($key, $locale, $translationFile);
 
-            $translationContent = $dataManager->findOrCreateTranslationContent(
-                $key, $locale, $translationFile
-            );
+            $content = $translationContent->getContent();
+
+            if (!empty($content)) {
+                continue;
+            }
 
             $translationContent->setContent($content);
             $translationContent->save();
