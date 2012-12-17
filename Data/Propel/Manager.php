@@ -294,23 +294,17 @@ class Manager implements DataManagerInterface
      */
     public function findOrCreateTranslationContent($translationKey, $locale, $translationFile = null)
     {
-        foreach ($translationKey->getTranslationContents() as $translationContent) {
-            if ($translationContent->getLocale() == $locale) {
-                return $translationContent;
-            }
+        $translationContents = $translationKey->getTranslationContents(
+            TranslationContentQuery::create()->filterByLocale($locale)
+        );
+
+        if (!$translationContents->isEmpty()) {
+            return $translationContents->getFirst();
         }
 
         $translationContent = new TranslationContent();
         $translationContent->setLocale($locale);
         $translationContent->setTranslationKey($translationKey);
-        $translationContent->setTranslationFile(
-            isset($translationFile) ?
-                $translationFile :
-                $this->findOrCreateTranslationFile(
-                    $translationKey->getDomain(),
-                    $translationContent->getLocale()
-                )
-        );
 
         return $translationContent;
     }
