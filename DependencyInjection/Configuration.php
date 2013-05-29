@@ -72,6 +72,11 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('%kernel.root_dir%/Resources/translations')
                 ->end()
 
+                ->arrayNode('load_bundle')
+                    ->defaultValue(array())
+                    ->prototype('scalar')->end()
+                ->end()
+
                 // @see notes
                 // ->scalarNode('storage')
                 //     ->cannotBeEmpty()

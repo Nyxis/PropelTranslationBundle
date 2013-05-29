@@ -48,29 +48,16 @@ class ImportTranslationCommand extends ContainerAwareCommand
         $this->output = $output;
 
         $this->output->writeln('>>> <comment>Importing translation files</comment>');
-        $this->importAppTranslationFiles(
-            $this->getContainer()->getParameter('propel.translation.managed_locales')
+        $this->importTranslationFiles(
+            $this->findTranslationFiles(
+                $this->getContainer()->getParameter('propel.translation.managed_locales')
+            )
         );
 
         if ($this->input->getOption('cache-clear')) {
             $this->output->writeln('<info>Removing translations cache files ...</info>');
             $this->removeTranslationCache();
         }
-    }
-
-    /**
-     * Imports application translation files.
-     *
-     * @param array $locales
-     */
-    protected function importAppTranslationFiles(array $locales)
-    {
-        $finder = $this->findTranslationsFiles(
-            $this->getApplication()->getKernel()->getRootDir().'/..',
-            $locales
-        );
-
-        $this->importTranslationFiles($finder);
     }
 
     /**
@@ -95,22 +82,33 @@ class ImportTranslationCommand extends ContainerAwareCommand
     }
 
     /**
-     * Return a Finder object if $path has a Resources/translations folder.
+     * Return a Finder object on all translation files
      *
-     * @param  string                          $path
+     * @param  array                           $locales
      * @return Symfony\Component\Finder\Finder
      */
-    protected function findTranslationsFiles($path, array $locales)
+    protected function findTranslationFiles(array $locales)
     {
+        $kernel        = $this->getApplication()->getKernel();
+        $kernelRootDir = $kernel->getRootDir();
+        $projectDir    = realpath(sprintf('%s/..', $kernelRootDir));
+
         $finder = new Finder();
         $finder->files()
             ->name(sprintf('/(.*(%s)\.(xliff|yml|php))/', implode('|', $locales)))
             ->filter(function($file) {
-                return (bool) preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath()) // in properly dirs
-                    && (bool) !preg_match('/.*\/vendor\/.*/', $file->getRealPath()); // but not in cache
-            });
+                return (bool) preg_match('/.*\/Resources\/translations\/.*/', $file->getRealPath()); // in translations dirs
+            })
+            ->in($kernelRootDir)                      // app
+            ->in(sprintf('%s/src', $projectDir))      // src
+        ;
 
-        return $finder->in($path);
+        // each extra bundles (vendors) which have to be load
+        foreach ($this->getContainer()->getParameter('propel.translation.load_bundle') as $bundle) {
+            $finder->in(sprintf('%sResources/translations', $kernel->locateResource($bundle)));
+        }
+
+        return $finder;
     }
 
     /**
@@ -123,4 +121,3 @@ class ImportTranslationCommand extends ContainerAwareCommand
         );
     }
 }
-
