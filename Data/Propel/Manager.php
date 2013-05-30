@@ -23,13 +23,21 @@ class Manager implements DataManagerInterface
     protected $exportFilePath;
 
     /**
+     * list of managed locales
+     * @var array
+     */
+    protected $managedLocales;
+
+    /**
      * Constructor.
      *
      * @param string $exportFilePath dir to export translations
+     * @param array  $managedLocales list of managed locales
      */
-    public function __construct($exportFilePath)
+    public function __construct($exportFilePath, array $managedLocales)
     {
         $this->exportFilePath = $exportFilePath;
+        $this->managedLocales = $managedLocales;
     }
 
     /**
@@ -37,9 +45,9 @@ class Manager implements DataManagerInterface
      * @var array
      */
     protected $modelAliases = array(
-        'translation_key' => 'Propel\TranslationBundle\Model\TranslationKey',
+        'translation_key'     => 'Propel\TranslationBundle\Model\TranslationKey',
         'translation_content' => 'Propel\TranslationBundle\Model\TranslationContent',
-        'translation_file' => 'Propel\TranslationBundle\Model\TranslationFile',
+        'translation_file'    => 'Propel\TranslationBundle\Model\TranslationFile',
     );
 
     /**
@@ -81,15 +89,18 @@ class Manager implements DataManagerInterface
     {
         $data = TranslationKeyQuery::create()
             ->joinWithTranslationContent()
-            ->select(array('TranslationContent.Locale'))
-            ->withColumn('DISTINCT(Domain)')
+            ->select(array('Domain', 'TranslationContent.Locale'))
+            ->useTranslationContentQuery()
+                ->filterByLocale($this->managedLocales)
+            ->endUse()
+            ->distinct('Domain')
             ->find();
 
         $return = array();
         foreach ($data as $line) {
             $return[] = array(
                 'locale' => $line['TranslationContent.Locale'],
-                'domain' => $line['DISTINCTDomain']
+                'domain' => $line['Domain']
             );
         }
 

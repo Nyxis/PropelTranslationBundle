@@ -63,7 +63,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('path_cache_app')
                     ->cannotBeEmpty()
-                    ->defaultValue(array('%kernel.root_dir%'))
+                    ->defaultValue(array('%kernel.root_dir%/cache/%kernel.environment%/translations'))
                     ->prototype('scalar')->end()
                 ->end()
 

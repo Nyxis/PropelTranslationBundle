@@ -28,6 +28,7 @@
         <!-- DataManager -->
         <service id="propel.translation.data_manager" class="%propel.translation.data_manager.class%">
             <argument>%propel.translation.path_export_dir%</argument>
+            <argument>%propel.translation.managed_locales%</argument>
         </service>
 
         <!-- Loader -->

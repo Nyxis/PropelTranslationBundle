@@ -26,6 +26,7 @@ class Manager
     public function __construct(array $cacheDirList, $debug)
     {
         $this->cacheFileList = array();
+
         foreach ($cacheDirList as $cacheDir) {
             $this->cacheFileList[] = new File(sprintf('%s/database.resources.php', $cacheDir), $debug);
         }
