@@ -51,6 +51,11 @@ class DatabaseLoader implements LoaderInterface
      */
     public function addDatabaseResources(TranslatorInterface $translator, CacheManager $cache)
     {
+        if (!\Propel::isInit()) { // Propel is not running -> cannot load database informations
+
+            return;
+        }
+
         $resources = array();
 
         if (!$cache->isFresh()) {
